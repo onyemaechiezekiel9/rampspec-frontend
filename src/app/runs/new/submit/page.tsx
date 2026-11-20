@@ -1,6 +1,7 @@
 "use client";
 
-import { AlertCircle, CheckCircle2, Info, Loader2 } from "lucide-react";
+import { AlertCircle, CheckCircle2, ExternalLink, Info, Loader2 } from "lucide-react";
+import Link from "next/link";
 import { useMemo, useState, type FormEvent } from "react";
 
 import { AppShell } from "@/components/app-shell";
@@ -195,6 +196,18 @@ export default function SubmitRunPage() {
                   {result.run.id}
                 </code>
               </div>
+              {result.run.state === "completed" &&
+                result.report?.reportId && (
+                  <div className="mt-4 border-t border-line pt-4">
+                    <Link
+                      href={`/reports/${encodeURIComponent(result.report.reportId)}`}
+                      className="inline-flex items-center gap-2 text-sm font-semibold text-accent hover:underline"
+                    >
+                      View report
+                      <ExternalLink size={14} />
+                    </Link>
+                  </div>
+                )}
             </div>
           )}
         </aside>
