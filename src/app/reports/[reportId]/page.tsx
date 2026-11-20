@@ -1,10 +1,12 @@
 import { AppShell } from "@/components/app-shell";
 import { StatusBadge } from "@/components/ui/status-badge";
-import { findings } from "@/lib/domain/fixtures";
+import { findings, reportVersionMetadata } from "@/lib/domain/fixtures";
 import { ReportCoverage } from "@/components/report-coverage";
 import { ReportBaseline } from "@/components/report-baseline";
 import { ReportExports } from "@/components/report-exports";
 import { ReportFindingsView } from "@/components/report-findings-view";
+import { StaleReportIndicator } from "@/components/stale-report-indicator";
+import { checkVersionCompatibility } from "@/lib/reports/compatibility";
 
 export default async function ReportDetailPage({
   params,
@@ -12,6 +14,10 @@ export default async function ReportDetailPage({
   params: Promise<{ reportId: string }>;
 }) {
   const { reportId } = await params;
+
+  // Get report version metadata - default to current if not found
+  const metadata = reportVersionMetadata[reportId] || reportVersionMetadata["report-current"];
+  const compatibility = checkVersionCompatibility(metadata);
 
   return (
     <AppShell
@@ -40,6 +46,9 @@ export default async function ReportDetailPage({
             <p className="mt-1 text-2xl font-bold">2</p>
           </div>
         </div>
+      </div>
+      <div className="mt-6">
+        <StaleReportIndicator compatibility={compatibility} />
       </div>
       <div className="mt-6">
         <ReportCoverage />
